@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
-import { MantineProvider, createTheme } from '@mantine/core';
+import { Container, Group, MantineProvider, createTheme } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -71,7 +71,13 @@ export default function RootLayout({
               defaultColorScheme="light"
             >
               <Notifications />
-              {children}
+              <Container size="lg" py="md">
+                <Group justify="flex-end" mb="md">
+                  <LanguageToggle />
+                  <ActionToggle />
+                </Group>
+                {children}
+              </Container>
               <ActionToggle />
               <LanguageToggle />
             </MantineProvider>
