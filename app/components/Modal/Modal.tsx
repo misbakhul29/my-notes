@@ -1,6 +1,8 @@
 'use client';
 
-import { Modal as MantineModal, Stack, Group, Button, Text } from '@mantine/core';
+import { useEffect } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
+import classes from './Modal.module.css';
 
 interface ModalProps {
     isOpen: boolean;
@@ -16,7 +18,6 @@ interface ModalProps {
         text: string;
         onClick: () => void;
     };
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export default function Modal({
@@ -26,36 +27,69 @@ export default function Modal({
     children,
     primaryButton,
     secondaryButton,
-    size = 'md',
 }: ModalProps) {
+    const { t } = useLanguage();
+
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'hidden';
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen, onClose]);
+
+    if (!isOpen) return null;
+
+    const handleOverlayClick = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
     return (
-        <MantineModal
-            opened={isOpen}
-            onClose={onClose}
-            title={<Text fw={500}>{title}</Text>}
-            size={size}
-            centered
-        >
-            <Stack>
-                {children}
+        <div className={classes.overlay} onClick={handleOverlayClick}>
+            <div className={classes.modal}>
+                <div className={classes.header}>
+                    <h2>{title}</h2>
+                    <button onClick={onClose} aria-label={t('common.close')}>
+                        ×
+                    </button>
+                </div>
+                <div className={classes.content}>{children}</div>
                 {(primaryButton || secondaryButton) && (
-                    <Group justify="flex-end" mt="md">
+                    <div className={classes.footer}>
                         {secondaryButton && (
-                            <Button variant="outline" onClick={secondaryButton.onClick}>
+                            <button
+                                className={classes.secondaryButton}
+                                onClick={secondaryButton.onClick}
+                                type="button"
+                            >
                                 {secondaryButton.text}
-                            </Button>
+                            </button>
                         )}
                         {primaryButton && (
-                            <Button
+                            <button
+                                className={classes.primaryButton}
                                 onClick={primaryButton.onClick}
-                                loading={primaryButton.loading}
+                                disabled={primaryButton.loading}
+                                type="button"
                             >
-                                {primaryButton.text}
-                            </Button>
+                                {primaryButton.loading ? t('common.loading') : primaryButton.text}
+                            </button>
                         )}
-                    </Group>
+                    </div>
                 )}
-            </Stack>
-        </MantineModal>
+            </div>
+        </div>
     );
 } 

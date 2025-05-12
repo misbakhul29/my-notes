@@ -19,6 +19,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
 import Modal from '../components/Modal/Modal';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Note {
   id: string;
@@ -39,6 +40,7 @@ export default function DashboardPage() {
     title: '',
     body: '',
   });
+  const { t } = useLanguage();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -162,16 +164,16 @@ export default function DashboardPage() {
   return (
     <Container size="lg" py="xl">
       <Group justify="space-between" mb="xl">
-        <Title order={1}>My Notes</Title>
+        <Title order={1}>{t('app.title')}</Title>
         <Group>
           <Button
             leftSection={<IconPlus size={16} />}
             onClick={handleAddNote}
           >
-            Add Note
+            {t('notes.add')}
           </Button>
           <Button variant="outline" color="red" onClick={handleLogout}>
-            Logout
+            {t('auth.logout')}
           </Button>
         </Group>
       </Group>
@@ -199,6 +201,7 @@ export default function DashboardPage() {
                       variant="subtle"
                       color="blue"
                       onClick={() => handleEditNote(note)}
+                      title={t('notes.edit')}
                     >
                       <IconEdit size={16} />
                     </ActionIcon>
@@ -206,6 +209,7 @@ export default function DashboardPage() {
                       variant="subtle"
                       color="red"
                       onClick={() => handleDeleteNote(note.id)}
+                      title={t('notes.delete')}
                     >
                       <IconTrash size={16} />
                     </ActionIcon>
@@ -215,7 +219,7 @@ export default function DashboardPage() {
                   {note.body}
                 </Text>
                 <Text size="xs" c="dimmed">
-                  {new Date(note.createdAt).toLocaleDateString()}
+                  {t('notes.created')}: {new Date(note.createdAt).toLocaleDateString()}
                 </Text>
               </Stack>
             </Card>
@@ -226,28 +230,27 @@ export default function DashboardPage() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingNote ? 'Edit Note' : 'Add New Note'}
-        size="lg"
+        title={editingNote ? t('notes.edit') : t('notes.add')}
         primaryButton={{
-          text: editingNote ? 'Update' : 'Create',
+          text: editingNote ? t('notes.update') : t('notes.create'),
           onClick: handleSubmit,
         }}
         secondaryButton={{
-          text: 'Cancel',
+          text: t('notes.cancel'),
           onClick: () => setIsModalOpen(false),
         }}
       >
         <Stack>
           <TextInput
-            label="Title"
-            placeholder="Note title"
+            label={t('notes.title')}
+            placeholder={t('notes.title')}
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             required
           />
           <Textarea
-            label="Content"
-            placeholder="Note content"
+            label={t('notes.content')}
+            placeholder={t('notes.content')}
             value={formData.body}
             onChange={(e) => setFormData({ ...formData, body: e.target.value })}
             minRows={4}
@@ -260,13 +263,12 @@ export default function DashboardPage() {
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
         title={selectedNote?.title || ''}
-        size="lg"
         primaryButton={{
-          text: 'Edit',
+          text: t('notes.edit'),
           onClick: () => selectedNote && handleEditNote(selectedNote),
         }}
         secondaryButton={{
-          text: 'Close',
+          text: t('notes.close'),
           onClick: () => setIsViewModalOpen(false),
         }}
       >
@@ -275,7 +277,7 @@ export default function DashboardPage() {
             {selectedNote?.body}
           </Text>
           <Text size="xs" c="dimmed">
-            Created: {selectedNote && new Date(selectedNote.createdAt).toLocaleString()}
+            {t('notes.created')}: {selectedNote && new Date(selectedNote.createdAt).toLocaleString()}
           </Text>
         </Stack>
       </Modal>

@@ -1,0 +1,31 @@
+.languageToggle {
+  position: fixed;
+  top: 1rem;
+  right: 4rem;
+  z-index: 1000;
+  background-color: var(--mantine-color-body);
+  border: 1px solid var(--mantine-color-gray-3);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.languageToggle:hover {
+  transform: scale(1.1);
+  background-color: var(--mantine-color-gray-0);
+}
+
+.languageText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+[data-mantine-color-scheme="dark"] .languageToggle {
+  border-color: var(--mantine-color-gray-7);
+}
+
+[data-mantine-color-scheme="dark"] .languageToggle:hover {
+  background-color: var(--mantine-color-gray-8);
+} 
