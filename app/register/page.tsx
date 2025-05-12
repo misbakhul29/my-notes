@@ -62,6 +62,7 @@ export default function RegisterPage() {
         });
       }
     } catch (error) {
+      console.error('Error submitting form:', error);
       notifications.show({
         title: t('auth.error'),
         message: t('auth.registerFailed'),
