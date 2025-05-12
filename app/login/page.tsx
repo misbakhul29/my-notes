@@ -44,7 +44,7 @@ export default function LoginPage() {
             const data = await response.json();
 
             if (data.status === 'success') {
-                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('token', data.data.accessToken);
                 notifications.show({
                     title: t('auth.success'),
                     message: t('auth.loginSuccess'),

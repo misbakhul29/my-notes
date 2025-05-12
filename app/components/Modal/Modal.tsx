@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
 import classes from './Modal.module.css';
 
 interface ModalProps {
@@ -29,6 +30,7 @@ export default function Modal({
     secondaryButton,
 }: ModalProps) {
     const { t } = useLanguage();
+    const { theme } = useTheme();
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
@@ -57,11 +59,15 @@ export default function Modal({
     };
 
     return (
-        <div className={classes.overlay} onClick={handleOverlayClick}>
-            <div className={classes.modal}>
+        <div className={`${classes.overlay} ${theme === 'dark' ? classes.dark : classes.light}`} onClick={handleOverlayClick}>
+            <div className={`${classes.modal} ${theme === 'dark' ? classes.dark : classes.light}`}>
                 <div className={classes.header}>
                     <h2>{title}</h2>
-                    <button onClick={onClose} aria-label={t('common.close')}>
+                    <button 
+                        onClick={onClose} 
+                        aria-label={t('common.close')}
+                        className={theme === 'dark' ? classes.dark : classes.light}
+                    >
                         ×
                     </button>
                 </div>
@@ -70,7 +76,7 @@ export default function Modal({
                     <div className={classes.footer}>
                         {secondaryButton && (
                             <button
-                                className={classes.secondaryButton}
+                                className={`${classes.secondaryButton} ${theme === 'dark' ? classes.dark : classes.light}`}
                                 onClick={secondaryButton.onClick}
                                 type="button"
                             >
@@ -79,7 +85,7 @@ export default function Modal({
                         )}
                         {primaryButton && (
                             <button
-                                className={classes.primaryButton}
+                                className={`${classes.primaryButton} ${theme === 'dark' ? classes.dark : classes.light}`}
                                 onClick={primaryButton.onClick}
                                 disabled={primaryButton.loading}
                                 type="button"
