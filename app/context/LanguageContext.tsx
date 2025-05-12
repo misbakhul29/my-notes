@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type Language = 'en' | 'id';
 
@@ -10,66 +10,114 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const translations = {
+type TranslationValue = string | { [key: string]: TranslationValue };
+
+interface Translations {
+  [key: string]: {
+    [key: string]: TranslationValue;
+  };
+}
+
+const translations: Translations = {
   en: {
-    'app.title': 'My Notes',
-    'app.description': 'A simple note-taking app',
-    'auth.login': 'Login',
-    'auth.register': 'Register',
-    'auth.logout': 'Logout',
-    'auth.email': 'Email',
-    'auth.password': 'Password',
-    'auth.name': 'Name',
-    'auth.loginSuccess': 'Login successful!',
-    'auth.registerSuccess': 'Registration successful! Please login.',
-    'auth.loginError': 'Login failed',
-    'auth.registerError': 'Registration failed',
-    'notes.add': 'Add Note',
-    'notes.edit': 'Edit Note',
-    'notes.delete': 'Delete Note',
-    'notes.title': 'Title',
-    'notes.content': 'Content',
-    'notes.create': 'Create',
-    'notes.update': 'Update',
-    'notes.cancel': 'Cancel',
-    'notes.close': 'Close',
-    'notes.created': 'Created',
-    'notes.deleteSuccess': 'Note deleted successfully',
-    'notes.deleteError': 'Failed to delete note',
-    'notes.createSuccess': 'Note created successfully',
-    'notes.updateSuccess': 'Note updated successfully',
-    'notes.createError': 'Failed to create note',
-    'notes.updateError': 'Failed to update note',
+    app: {
+      title: 'My Notes',
+    },
+    auth: {
+      login: 'Login',
+      register: 'Register',
+      logout: 'Logout',
+      email: 'Email',
+      password: 'Password',
+      name: 'Name',
+      emailPlaceholder: 'you@example.com',
+      passwordPlaceholder: 'Your password',
+      namePlaceholder: 'Your name',
+      noAccount: "Don't have an account?",
+      haveAccount: 'Already have an account?',
+      success: 'Success',
+      error: 'Error',
+      loginSuccess: 'Login successful!',
+      registerSuccess: 'Registration successful! Please login.',
+      loginFailed: 'Login failed',
+      registerFailed: 'Registration failed',
+      invalidEmail: 'Invalid email',
+      passwordLength: 'Password must be at least 6 characters',
+      nameLength: 'Name must be at least 2 characters',
+    },
+    notes: {
+      add: 'Add Note',
+      edit: 'Edit',
+      delete: 'Delete',
+      update: 'Update',
+      create: 'Create',
+      cancel: 'Cancel',
+      close: 'Close',
+      title: 'Title',
+      content: 'Content',
+      created: 'Created',
+      fetchError: 'Failed to fetch notes',
+      deleteSuccess: 'Note deleted successfully',
+      deleteError: 'Failed to delete note',
+      createSuccess: 'Note created successfully',
+      updateSuccess: 'Note updated successfully',
+      createError: 'Failed to create note',
+      updateError: 'Failed to update note',
+    },
+    common: {
+      close: 'Close',
+      loading: 'Loading...',
+    },
   },
   id: {
-    'app.title': 'Catatan Saya',
-    'app.description': 'Aplikasi catatan sederhana',
-    'auth.login': 'Masuk',
-    'auth.register': 'Daftar',
-    'auth.logout': 'Keluar',
-    'auth.email': 'Email',
-    'auth.password': 'Kata Sandi',
-    'auth.name': 'Nama',
-    'auth.loginSuccess': 'Berhasil masuk!',
-    'auth.registerSuccess': 'Pendaftaran berhasil! Silakan masuk.',
-    'auth.loginError': 'Gagal masuk',
-    'auth.registerError': 'Gagal mendaftar',
-    'notes.add': 'Tambah Catatan',
-    'notes.edit': 'Edit Catatan',
-    'notes.delete': 'Hapus Catatan',
-    'notes.title': 'Judul',
-    'notes.content': 'Isi',
-    'notes.create': 'Buat',
-    'notes.update': 'Perbarui',
-    'notes.cancel': 'Batal',
-    'notes.close': 'Tutup',
-    'notes.created': 'Dibuat',
-    'notes.deleteSuccess': 'Catatan berhasil dihapus',
-    'notes.deleteError': 'Gagal menghapus catatan',
-    'notes.createSuccess': 'Catatan berhasil dibuat',
-    'notes.updateSuccess': 'Catatan berhasil diperbarui',
-    'notes.createError': 'Gagal membuat catatan',
-    'notes.updateError': 'Gagal memperbarui catatan',
+    app: {
+      title: 'Catatan Saya',
+    },
+    auth: {
+      login: 'Masuk',
+      register: 'Daftar',
+      logout: 'Keluar',
+      email: 'Email',
+      password: 'Kata Sandi',
+      name: 'Nama',
+      emailPlaceholder: 'anda@contoh.com',
+      passwordPlaceholder: 'Kata sandi Anda',
+      namePlaceholder: 'Nama Anda',
+      noAccount: 'Belum punya akun?',
+      haveAccount: 'Sudah punya akun?',
+      success: 'Berhasil',
+      error: 'Kesalahan',
+      loginSuccess: 'Login berhasil!',
+      registerSuccess: 'Pendaftaran berhasil! Silakan login.',
+      loginFailed: 'Login gagal',
+      registerFailed: 'Pendaftaran gagal',
+      invalidEmail: 'Email tidak valid',
+      passwordLength: 'Kata sandi minimal 6 karakter',
+      nameLength: 'Nama minimal 2 karakter',
+    },
+    notes: {
+      add: 'Tambah Catatan',
+      edit: 'Ubah',
+      delete: 'Hapus',
+      update: 'Perbarui',
+      create: 'Buat',
+      cancel: 'Batal',
+      close: 'Tutup',
+      title: 'Judul',
+      content: 'Isi',
+      created: 'Dibuat',
+      fetchError: 'Gagal mengambil catatan',
+      deleteSuccess: 'Catatan berhasil dihapus',
+      deleteError: 'Gagal menghapus catatan',
+      createSuccess: 'Catatan berhasil dibuat',
+      updateSuccess: 'Catatan berhasil diperbarui',
+      createError: 'Gagal membuat catatan',
+      updateError: 'Gagal memperbarui catatan',
+    },
+    common: {
+      close: 'Tutup',
+      loading: 'Memuat...',
+    },
   },
 };
 
@@ -81,9 +129,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    const storedLanguage = localStorage.getItem('language') as Language;
-    if (storedLanguage) {
-      setLanguage(storedLanguage);
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage) {
+      setLanguage(savedLanguage);
     }
   }, []);
 
@@ -93,8 +141,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('language', newLanguage);
   };
 
-  const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[typeof language]] || key;
+  const t = (key: string) => {
+    const keys = key.split('.');
+    let value: TranslationValue = translations[language];
+
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return key;
+      }
+    }
+
+    return typeof value === 'string' ? value : key;
   };
 
   if (!mounted) {

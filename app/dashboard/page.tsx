@@ -66,8 +66,8 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error fetching notes:', error);
       notifications.show({
-        title: 'Error',
-        message: 'Failed to fetch notes',
+        title: t('auth.error'),
+        message: t('notes.fetchError'),
         color: 'red',
       });
     } finally {
@@ -110,8 +110,8 @@ export default function DashboardPage() {
 
       if (response.ok) {
         notifications.show({
-          title: 'Success',
-          message: 'Note deleted successfully',
+          title: t('auth.success'),
+          message: t('notes.deleteSuccess'),
           color: 'green',
         });
         fetchNotes();
@@ -119,8 +119,8 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error deleting note:', error);
       notifications.show({
-        title: 'Error',
-        message: 'Failed to delete note',
+        title: t('auth.error'),
+        message: t('notes.deleteError'),
         color: 'red',
       });
     }
@@ -144,8 +144,8 @@ export default function DashboardPage() {
 
       if (response.ok) {
         notifications.show({
-          title: 'Success',
-          message: `Note ${editingNote ? 'updated' : 'created'} successfully`,
+          title: t('auth.success'),
+          message: editingNote ? t('notes.updateSuccess') : t('notes.createSuccess'),
           color: 'green',
         });
         setIsModalOpen(false);
@@ -154,8 +154,8 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error submitting note:', error);
       notifications.show({
-        title: 'Error',
-        message: `Failed to ${editingNote ? 'update' : 'create'} note`,
+        title: t('auth.error'),
+        message: editingNote ? t('notes.updateError') : t('notes.createError'),
         color: 'red',
       });
     }

@@ -74,7 +74,7 @@ export default function LoginPage() {
         <Container size="xs" py="xl">
             <Paper radius="md" p="xl" withBorder>
                 <Title order={2} ta="center" mt="md" mb={50}>
-                    {t('auth.login')}
+                    {t('auth.login')} {t('app.title')}
                 </Title>
 
                 <form onSubmit={form.onSubmit(handleSubmit)}>
