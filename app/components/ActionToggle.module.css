@@ -1,0 +1,47 @@
+.icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .dark {
+    @mixin dark {
+      display: none;
+    }
+  
+    @mixin light {
+      display: block;
+    }
+  }
+  
+  .light {
+    @mixin light {
+      display: none;
+    }
+  
+    @mixin dark {
+      display: block;
+    }
+  }
+
+  .actionToggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    background-color: var(--mantine-color-body);
+    border: 1px solid var(--mantine-color-gray-3);
+    transition: all 0.2s ease;
+  }
+
+  .actionToggle:hover {
+    transform: scale(1.1);
+    background-color: var(--mantine-color-gray-0);
+  }
+
+  [data-mantine-color-scheme="dark"] .actionToggle {
+    border-color: var(--mantine-color-gray-7);
+  }
+
+  [data-mantine-color-scheme="dark"] .actionToggle:hover {
+    background-color: var(--mantine-color-gray-8);
+  }
