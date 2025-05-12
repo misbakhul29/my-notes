@@ -1,14 +1,12 @@
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
-import { Container, Group, MantineProvider, createTheme } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
+import { Container, Group } from '@mantine/core';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from './context/ThemeContext';
-import { LanguageProvider } from './context/LanguageContext';
 import { ActionToggle } from './components/ActionToggle';
 import { LanguageToggle } from './components/LanguageToggle';
+import { Providers } from './providers';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,37 +16,6 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const theme = createTheme({
-  primaryColor: 'blue',
-  fontFamily: 'Inter, sans-serif',
-  components: {
-    Button: {
-      defaultProps: {
-        size: 'md',
-      },
-    },
-    Card: {
-      defaultProps: {
-        shadow: 'sm',
-      },
-    },
-  },
-  colors: {
-    dark: [
-      '#C1C2C5',
-      '#A6A7AB',
-      '#909296',
-      '#5C5F66',
-      '#373A40',
-      '#2C2E33',
-      '#25262B',
-      '#1A1B1E',
-      '#141517',
-      '#101113',
-    ],
-  },
 });
 
 export const metadata: Metadata = {
@@ -64,25 +31,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider>
-          <LanguageProvider>
-            <MantineProvider 
-              theme={theme}
-              defaultColorScheme="light"
-            >
-              <Notifications />
-              <Container size="lg" py="md">
-                <Group justify="flex-end" mb="md">
-                  <LanguageToggle />
-                  <ActionToggle />
-                </Group>
-                {children}
-              </Container>
-              <ActionToggle />
+        <Providers>
+          <Container size="lg" py="md">
+            <Group justify="flex-end" mb="md">
               <LanguageToggle />
-            </MantineProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+              <ActionToggle />
+            </Group>
+            {children}
+          </Container>
+        </Providers>
       </body>
     </html>
   );

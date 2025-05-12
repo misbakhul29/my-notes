@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { TextInput, PasswordInput, Button, Paper, Title, Container, Text, Anchor } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { useLanguage } from '../context/LanguageContext';
+import { login } from '../actions/auth';
+import { notifications } from '@mantine/notifications';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -30,45 +31,27 @@ export default function LoginPage() {
         }
     }, [router]);
 
-    const handleSubmit = async (values: typeof form.values) => {
+    const handleSubmit = async (values: { email: string; password: string }) => {
         setIsLoading(true);
         try {
-            const response = await fetch('https://notes-api.dicoding.dev/v1/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
-
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                localStorage.setItem('token', data.data.accessToken);
-                notifications.show({
-                    title: t('auth.success'),
-                    message: t('auth.loginSuccess'),
-                    color: 'green',
-                });
-                router.push('/dashboard');
-            } else {
-                notifications.show({
-                    title: t('auth.error'),
-                    message: data.message || t('auth.loginFailed'),
-                    color: 'red',
-                });
-            }
+          const formData = new FormData();
+          formData.append('email', values.email);
+          formData.append('password', values.password);
+          const response = await login(undefined, formData);
+          notifications.show({
+            title: 'Login successful',
+            message: 'You have successfully logged in',
+            color: 'green',
+          });
+          localStorage.setItem('token', response.token || '');
+          router.push('/dashboard');
         } catch (error) {
-            console.error('Error submitting form:', error);
-            notifications.show({
-                title: t('auth.error'),
-                message: t('auth.loginFailed'),
-                color: 'red',
-            });
+          console.error('Login failed:', error);
         } finally {
-            setIsLoading(false);
+          setIsLoading(false);
         }
-    };
+      };
+      
 
     return (
         <Container size="xs" py="xl">

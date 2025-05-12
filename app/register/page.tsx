@@ -12,13 +12,13 @@ import {
   Text,
   Anchor,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { useForm } from '@mantine/form';
 import { useLanguage } from '../context/LanguageContext';
+import { signup } from '../actions/auth';
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const { t } = useLanguage();
 
   const form = useForm({
@@ -34,40 +34,13 @@ export default function RegisterPage() {
     },
   });
 
-  const handleSubmit = async (values: typeof form.values) => {
+  const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
     try {
-      const response = await fetch('https://notes-api.dicoding.dev/v1/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-
-      const data = await response.json();
-
-      if (data.status === 'success') {
-        notifications.show({
-          title: t('auth.success'),
-          message: t('auth.registerSuccess'),
-          color: 'green',
-        });
-        router.push('/login');
-      } else {
-        notifications.show({
-          title: t('auth.error'),
-          message: data.message || t('auth.registerFailed'),
-          color: 'red',
-        });
-      }
+      await signup(undefined, formData);
+      router.push('/login');
     } catch (error) {
-      console.error('Error submitting form:', error);
-      notifications.show({
-        title: t('auth.error'),
-        message: t('auth.registerFailed'),
-        color: 'red',
-      });
+      console.error('Registration failed:', error);
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +53,7 @@ export default function RegisterPage() {
           {t('auth.register')}
         </Title>
 
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form action={handleSubmit}>
           <TextInput
             label={t('auth.name')}
             placeholder={t('auth.namePlaceholder')}
