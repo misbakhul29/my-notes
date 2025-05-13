@@ -1,0 +1,194 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.header button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.content {
+  margin-bottom: 20px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.primaryButton {
+  background-color: #228be6;
+  color: white;
+  border: none;
+}
+
+.primaryButton:hover {
+  background-color: #1c7ed6;
+}
+
+.primaryButton:disabled {
+  background-color: #74c0fc;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  background-color: transparent;
+  border: 1px solid #dee2e6;
+}
+
+.secondaryButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* Dark theme styles */
+.dark.overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.dark.modal {
+  background: #1a1b1e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dark.header h2 {
+  color: #fff;
+}
+
+.dark.header button {
+  color: #fff;
+}
+
+.dark.header button:hover {
+  background-color: #2c2e33;
+}
+
+.dark.content {
+  color: #c1c2c5;
+}
+
+.dark.primaryButton {
+  background-color: #228be6;
+  color: white;
+}
+
+.dark.primaryButton:hover {
+  background-color: #1c7ed6;
+}
+
+.dark.primaryButton:disabled {
+  background-color: #74c0fc;
+}
+
+.dark.secondaryButton {
+  background-color: transparent;
+  border: 1px solid #373a40;
+  color: #fff;
+}
+
+.dark.secondaryButton:hover {
+  background-color: #2c2e33;
+}
+
+/* Light theme styles */
+.light.overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.light.modal {
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.light.header h2 {
+  color: #1a1b1e;
+}
+
+.light.header button {
+  color: #1a1b1e;
+}
+
+.light.header button:hover {
+  background-color: #f8f9fa;
+}
+
+.light.content {
+  color: #1a1b1e;
+}
+
+.light.primaryButton {
+  background-color: #228be6;
+  color: white;
+}
+
+.light.primaryButton:hover {
+  background-color: #1c7ed6;
+}
+
+.light.primaryButton:disabled {
+  background-color: #74c0fc;
+}
+
+.light.secondaryButton {
+  background-color: transparent;
+  border: 1px solid #dee2e6;
+  color: #1a1b1e;
+}
+
+.light.secondaryButton:hover {
+  background-color: #f8f9fa;
+} 
