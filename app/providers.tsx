@@ -1,12 +1,20 @@
 'use client';
 
-import { ThemeProvider } from './context/ThemeContext';
-import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext'; // Pastikan path ini benar
+import { LanguageProvider } from './context/LanguageContext'; // Pastikan path ini benar
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+import { ReactNode } from "react";
+import { SessionProvider } from 'next-auth/react';
+
+interface ProvidersProps {
+  children: ReactNode;
+}
+
+export function Providers({ children }: ProvidersProps) {
   return (
+    <SessionProvider>
       <ThemeProvider>
         <LanguageProvider>
           <MantineProvider>
@@ -15,5 +23,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           </MantineProvider>
         </LanguageProvider>
       </ThemeProvider>
+    </SessionProvider>
   );
-} 
+}

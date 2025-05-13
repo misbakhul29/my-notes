@@ -20,6 +20,7 @@ import { notifications } from '@mantine/notifications';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
 import Modal from '../components/Modal/Modal';
 import { useLanguage } from '../context/LanguageContext';
+import { useSession, signOut } from 'next-auth/react'; // Pastikan useSession diimpor
 
 interface Note {
   id: string;
@@ -30,6 +31,7 @@ interface Note {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { data: session, status } = useSession(); // Dapatkan status sesi juga
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,26 +44,39 @@ export default function DashboardPage() {
   });
   const { t } = useLanguage();
 
+  // Panggil fetchNotes hanya jika sesi sudah dimuat dan ada token
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (status === 'authenticated' && session?.accessToken) {
+      fetchNotes();
+    } else if (status === 'unauthenticated') {
+      // Jika tidak terotentikasi, arahkan ke halaman login
+      console.log('tidak terotentikasi');
       router.push('/login');
-      return;
     }
-    fetchNotes();
-  }, [router]);
+  }, [status, session, router]); // Tambahkan session dan status sebagai dependency
 
   const fetchNotes = async () => {
+    if (!session?.accessToken) {
+      // Jika tidak ada token, jangan lanjutkan
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch('https://notes-api.dicoding.dev/v1/notes', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.accessToken}`, // Gunakan session.accessToken
         },
       });
       const data = await response.json();
       if (data.status === 'success') {
         setNotes(data.data);
+      } else {
+        notifications.show({
+          title: t('auth.error'),
+          message: data.message || t('notes.fetchError'),
+          color: 'red',
+        });
       }
     } catch (error) {
       console.error('Error fetching notes:', error);
@@ -75,8 +90,8 @@ export default function DashboardPage() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
     router.push('/login');
   };
 
@@ -99,22 +114,37 @@ export default function DashboardPage() {
   };
 
   const handleDeleteNote = async (id: string) => {
+    if (!session?.accessToken) {
+      notifications.show({
+        title: t('auth.error'),
+        message: t('notes.noAuthToken'),
+        color: 'red',
+      });
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`https://notes-api.dicoding.dev/v1/notes/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.accessToken}`, // Gunakan session.accessToken
         },
       });
 
-      if (response.ok) {
+      const responseData = await response.json(); // Parse respons untuk pesan kesalahan
+      if (response.ok && responseData.status === 'success') {
         notifications.show({
           title: t('auth.success'),
           message: t('notes.deleteSuccess'),
           color: 'green',
         });
         fetchNotes();
+      } else {
+        notifications.show({
+          title: t('auth.error'),
+          message: responseData.message || t('notes.deleteError'),
+          color: 'red',
+        });
       }
     } catch (error) {
       console.error('Error deleting note:', error);
@@ -127,8 +157,16 @@ export default function DashboardPage() {
   };
 
   const handleSubmit = async () => {
+    if (!session?.accessToken) {
+      notifications.show({
+        title: t('auth.error'),
+        message: t('notes.noAuthToken'),
+        color: 'red',
+      });
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
       const url = editingNote
         ? `https://notes-api.dicoding.dev/v1/notes/${editingNote.id}`
         : 'https://notes-api.dicoding.dev/v1/notes';
@@ -136,13 +174,14 @@ export default function DashboardPage() {
       const response = await fetch(url, {
         method: editingNote ? 'PUT' : 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.accessToken}`, // Gunakan session.accessToken
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
+      const responseData = await response.json(); // Parse respons untuk pesan kesalahan
+      if (response.ok && responseData.status === 'success') {
         notifications.show({
           title: t('auth.success'),
           message: editingNote ? t('notes.updateSuccess') : t('notes.createSuccess'),
@@ -150,6 +189,12 @@ export default function DashboardPage() {
         });
         setIsModalOpen(false);
         fetchNotes();
+      } else {
+        notifications.show({
+          title: t('auth.error'),
+          message: responseData.message || (editingNote ? t('notes.updateError') : t('notes.createError')),
+          color: 'red',
+        });
       }
     } catch (error) {
       console.error('Error submitting note:', error);
@@ -178,11 +223,12 @@ export default function DashboardPage() {
         </Group>
       </Group>
 
-      <LoadingOverlay visible={isLoading} />
+      {/* Tampilkan LoadingOverlay sampai sesi dimuat */}
+      <LoadingOverlay visible={isLoading || status === 'loading'} />
 
       <Grid>
         {notes.map((note) => (
-          <Grid.Col key={note.id} span={4}>
+          <Grid.Col key={note.id} span={{ base: 12, sm: 6, md: 4 }}> {/* Sesuaikan ukuran kolom untuk responsif */}
             <Card
               onClick={() => openNote(note)}
               shadow="sm"
@@ -227,6 +273,7 @@ export default function DashboardPage() {
         ))}
       </Grid>
 
+      {/* Modal Add/Edit Note */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -259,6 +306,7 @@ export default function DashboardPage() {
         </Stack>
       </Modal>
 
+      {/* Modal View Note */}
       <Modal
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
