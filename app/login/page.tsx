@@ -6,13 +6,12 @@ import { TextInput, PasswordInput, Button, Paper, Title, Container, Text, Anchor
 import { useForm } from '@mantine/form';
 import { useLanguage } from '../context/LanguageContext';
 import { notifications } from '@mantine/notifications';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const { t } = useLanguage();
-    const { data: session } = useSession();
 
     const form = useForm({
         initialValues: {

@@ -75,7 +75,7 @@ export default function RegisterPage() {
         });
         console.error('Registration failed:', responseData); // Log full API response for debugging
       }
-    } catch (error: any) {
+    } catch (error) {
       // Handle network errors or other unexpected issues
       console.error('Registration failed:', error);
       notifications.show({
