@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TextInput, PasswordInput, Button, Paper, Title, Container, Text, Anchor } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -61,6 +61,7 @@ export default function LoginPage() {
                 });
             }
         } catch (error) {
+            console.error('Login failed:', error);
             notifications.show({
                 title: t('auth.error'),
                 message: t('auth.unexpectedError'),

@@ -44,17 +44,6 @@ export default function DashboardPage() {
   });
   const { t } = useLanguage();
 
-  // Panggil fetchNotes hanya jika sesi sudah dimuat dan ada token
-  useEffect(() => {
-    if (status === 'authenticated' && session?.accessToken) {
-      fetchNotes();
-    } else if (status === 'unauthenticated') {
-      // Jika tidak terotentikasi, arahkan ke halaman login
-      console.log('tidak terotentikasi');
-      router.push('/login');
-    }
-  }, [status, session, router]); // Tambahkan session dan status sebagai dependency
-
   const fetchNotes = async () => {
     if (!session?.accessToken) {
       // Jika tidak ada token, jangan lanjutkan
@@ -89,6 +78,18 @@ export default function DashboardPage() {
       setIsLoading(false);
     }
   };
+
+  // Panggil fetchNotes hanya jika sesi sudah dimuat dan ada token
+  useEffect(() => {
+    if (status === 'authenticated' && session?.accessToken) {
+      fetchNotes();
+    } else if (status === 'unauthenticated') {
+      // Jika tidak terotentikasi, arahkan ke halaman login
+      console.log('tidak terotentikasi');
+      router.push('/login');
+    }
+  }, [status, session, router, fetchNotes]); // Tambahkan session dan status sebagai dependency
+
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
