@@ -88,7 +88,7 @@ export default function DashboardPage() {
       console.log('tidak terotentikasi');
       router.push('/login');
     }
-  }, [status, session, router, fetchNotes]); // Tambahkan session dan status sebagai dependency
+  }, [status, session, router]); // Tambahkan session dan status sebagai dependency
 
 
   const handleLogout = async () => {
