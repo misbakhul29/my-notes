@@ -32,8 +32,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
-          <Container size="lg" py="md">
-            <Group justify="flex-end" mb="md">
+          <Container fluid py="md">
+            <Group justify="flex-end" mb="md" gap={0}>
               <LanguageToggle />
               <ActionToggle />
             </Group>
